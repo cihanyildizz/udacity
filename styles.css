@@ -1,0 +1,36 @@
+
+ ul {
+  list-style-type:none;
+  padding:0;
+ }
+
+#cerceve
+ {
+   border-style: solid;
+   border-width: 1px;
+   margin: 2rem;
+   padding: 1rem;
+   outline-offset: 0.5rem;
+   width:300px;
+	 height:500px;
+ }
+
+.cerceveon
+{
+  border-style: solid;
+  border-width: 1px;
+  margin: 2rem;
+  padding: 1rem;
+  outline-offset: 0.5rem;
+  width:300px;
+  height:300px;
+}
+
+.cercevearka
+{
+  border-style: solid;
+  border-width: 1px;
+  padding: 1rem;
+  width:270px;
+  height:180px;
+}

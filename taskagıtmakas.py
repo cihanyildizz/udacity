@@ -8,41 +8,63 @@ class Player:
     def __init__(self):
         self.my_move = self.moves
         self.pc_move = random.choice(self.moves)
+        self.score = 0
 
     def learn(self, my_move, pc_move):
         self.my_move = my_move
         self.pc_move = pc_move
 
+    def learn_past(pc_move):
+        pass
+
+    def move(self):
+        return self.moves[0]
 
 class RandomPlayer(Player):
     def move(self):
-        return random.choice(self.moves)
-
+        index = random.randint(0, 2)
+        return self.moves[index]
 
 class ReflectPlayer(Player):
+
+    def __init__(self):
+        Player.__init__(self)
+        self.pc_move = None
+
     def move(self):
+        if self.pc_move is None:
+            return Player.move(self)
         return self.pc_move
 
+    def learn_past(self, pc_move):
+        self.pc_move = pc_move
 
 class CyclePlayer(Player):
-    def move(self):
-        if self.my_move == self.moves[0]:
-            return self.moves[1]
-        elif self.my_move == self.moves[1]:
-            return self.moves[2]
-        else:
-            return self.moves[0]
 
+    def __init__(self):
+        Player.__init__(self)
+        self.last_move = None
+
+    def move(self):
+        move_human = None
+        if self.last_move is None:
+            move_human = Player.move(self)
+        else:
+            index = self.moves.index(self.last_move) + 1
+            if index >= len(self.moves):
+                index = 0
+            move_human = self.moves[index]
+        self.last_move = move_human
+        return move_human
 
 class HumanPlayer(Player):
     def move(self):
         while True:
-            move_human = input("'taş', 'kağıt', 'makas'? > ")
+            move_human = input('Hamleni yap (' + ', '.join(self.moves) + '):\n')
             if move_human.lower() in self.moves:
                 return move_human.lower()
             elif move_human.lower() == 'çıkış':
                 exit()
-
 
 
 class Game:
@@ -52,10 +74,31 @@ class Game:
         self.score_p1 = 0
         self.score_p2 = 0
 
+    def game_header(self):
+        print(
+            "\n"
+            "--------------------------\n"
+            "Taş, Kağıt, Makas\n"
+            "--------------------------\n"
+            "Kurallar:\n"
+            " Makas kağıdı keser\n"
+            " Kağıt taşı dolar\n"
+            " Taş makası kırar\n"
+            "--------------------------\n"
+            "Şimdi yarışmaya başla !!!\n"
+            ">>>> Oyu başlıyor ... <<<<"
+            "\n çıkmak istersen \'çıkış\ yaz.'"
+            " \n kaç round oynayacaksın soracağız))"
+            )
+
     def beats(self, one, two):
-        return ((one == 'taş' and two == 'makas') or
-                (one == 'makas' and two == 'kağıt') or
-                (one == 'kağıt' and two == 'taş'))
+        if (one == 'taş' and two == 'makas'):
+            return True
+        elif (one == 'makas' and two == 'kağıt'):
+            return True
+        elif (one == 'kağıt' and two == 'taş'):
+            return True
+        return False
 
     def rounds(self):
         while True:
@@ -89,10 +132,7 @@ class Game:
         self.p2.learn(move_pc, move_human)
 
     def play_game(self):
-        print(">>>> Oyu başlıyor ... <<<<"
-            "\n çıkmak istersen \'çıkış\ yaz.'"
-            " \n kaç round oynayacaksın soracağız)"
-        )
+        self.game_header()
         self.rounds()
         for round in range(int(self.number_rounds)):
             print(f"\nRound {round + 1} --")
